@@ -14,6 +14,9 @@ import violetbeach.querydsl.entity.QTeam;
 import violetbeach.querydsl.entity.Team;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
 
 import java.util.List;
@@ -208,7 +211,44 @@ public class QuerydslBasicTest {
                 .leftJoin(team).on(member.username.eq(team.name))
                 .where(member.username.eq(team.name))
                 .fetch();
-        
+
+    }
+
+    @PersistenceUnit
+    EntityManagerFactory emf;
+
+    @Test
+    public void fetch_join_no() {
+        em.flush();
+        em.clear();
+
+        Member result = queryFactory
+                .selectFrom(member)
+                .where(member.username.eq("member1"))
+                .fetchOne();
+
+        boolean isLoaded = emf.getPersistenceUnitUtil().isLoaded(result.getTeam());
+        assertThat(isLoaded).isFalse();
+    }
+
+    /*
+     Memo:
+        fetchJoin은 N+1 문제를 해결하기 위해서 사용한다.
+        Select에 엔터티 두개를 넣을 수 있지만 Tuple을 반환한다. -> 영속성 컨텍스트에 등록되지 않는다.
+     */
+    @Test
+    public void fetch_join_use() {
+        em.flush();
+        em.clear();
+
+        Member result = queryFactory
+                .selectFrom(member)
+                .join(member.team).fetchJoin()
+                .where(member.username.eq("member1"))
+                .fetchOne();
+
+        boolean isLoaded = emf.getPersistenceUnitUtil().isLoaded(result.getTeam());
+        assertThat(isLoaded).isFalse();
     }
 
 }
