@@ -2,6 +2,7 @@ package violetbeach.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import javax.transaction.Transactional;
 
 import java.util.List;
 
+import static com.querydsl.jpa.JPAExpressions.*;
 import static org.assertj.core.api.Assertions.*;
 import static violetbeach.querydsl.entity.QMember.member;
 import static violetbeach.querydsl.entity.QTeam.team;
@@ -249,6 +251,21 @@ public class QuerydslBasicTest {
 
         boolean isLoaded = emf.getPersistenceUnitUtil().isLoaded(result.getTeam());
         assertThat(isLoaded).isFalse();
+    }
+
+    @Test
+    public void subQuery() {
+
+        List<Member> result = queryFactory
+                .selectFrom(member)
+                .where(member.age.goe(
+                        select(member.age.avg())
+                                .from(member)
+                ))
+                .fetch();
+
+        assertThat(result).extracting("age")
+                .containsExactly(30, 40);
     }
 
 }
