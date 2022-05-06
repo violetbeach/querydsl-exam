@@ -2,6 +2,7 @@ package violetbeach.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.assertj.core.api.Assertions;
@@ -268,4 +269,29 @@ public class QuerydslBasicTest {
                 .containsExactly(30, 40);
     }
 
+    @Test
+    public void basicCase() {
+        List<String> result = queryFactory
+                .select(member.age
+                        .when(10).then("열살")
+                        .when(20).then("스무살")
+                        .otherwise("기타"))
+                .from(member)
+                .fetch();
+    }
+
+    /*
+    * DB는 필터, 그룹핑 등만 작업해서 책임을 줄이고
+    * 보여주는 것은 가능하면 앱단 또는 Presentaion 단(front)에서 하는 게 좋다.
+    * */
+    @Test
+    public void complexCase() {
+        queryFactory
+                .select(new CaseBuilder()
+                        .when(member.age.between(0, 20)).then("0~20살")
+                        .when(member.age.between(21, 30)).then("21~30살")
+                        .otherwise("기타"))
+                .from(member)
+                .fetch();
+    }
 }
