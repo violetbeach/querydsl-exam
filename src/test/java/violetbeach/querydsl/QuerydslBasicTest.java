@@ -383,4 +383,22 @@ public class QuerydslBasicTest {
         }
     }
 
+    /*
+     * Use Constructor
+     * 스펙이 달라도 생성자 컬럼 순서가 같으면 상관없다.
+     * */
+    @Test
+    public void queryDslByConstructor() {
+        List<MemberDto> result = queryFactory
+                .select(Projections.constructor(MemberDto.class,
+                        member.username,
+                        member.age))
+                .from(member)
+                .fetch();
+
+        for (MemberDto memberDto : result) {
+            System.out.println(memberDto);
+        }
+    }
+
 }
