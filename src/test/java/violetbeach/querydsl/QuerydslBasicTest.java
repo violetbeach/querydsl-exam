@@ -315,4 +315,35 @@ public class QuerydslBasicTest {
                 .where(member.username.eq("member1"))
                 .fetch();
     }
+
+    @Test
+    public void simpleProjection() {
+        List<String> result = queryFactory
+                .select(member.username)
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+
+        }
+    }
+
+    /*
+    * Tuple 보다는 Dto 사용 (Query DSL 종속성 제거)
+    * */
+    @Test
+    public void testProjection() {
+        List<Tuple> result = queryFactory
+                .select(member.username, member.age)
+                .from(member)
+                .fetch();
+
+        for (Tuple tuple : result) {
+            String username = tuple.get(member.username);
+            Integer age = tuple.get(member.age);
+        }
+    }
+
+
 }
