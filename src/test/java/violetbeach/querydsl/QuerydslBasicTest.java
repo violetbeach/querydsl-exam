@@ -2,6 +2,7 @@ package violetbeach.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import violetbeach.querydsl.dto.MemberDto;
 import violetbeach.querydsl.entity.Member;
 import violetbeach.querydsl.entity.QMember;
 import violetbeach.querydsl.entity.QTeam;
@@ -342,6 +344,23 @@ public class QuerydslBasicTest {
         for (Tuple tuple : result) {
             String username = tuple.get(member.username);
             Integer age = tuple.get(member.age);
+        }
+    }
+
+    /*
+    * Use Getter, Setter
+    * */
+    @Test
+    public void queryDslBySetter() {
+        List<MemberDto> result = queryFactory
+                .select(Projections.bean(MemberDto.class,
+                        member.username,
+                        member.age))
+                .from(member)
+                .fetch();
+
+        for (MemberDto memberDto : result) {
+            System.out.println(memberDto);
         }
     }
 
