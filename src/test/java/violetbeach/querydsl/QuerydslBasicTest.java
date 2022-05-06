@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import violetbeach.querydsl.dto.MemberDto;
+import violetbeach.querydsl.dto.QMemberDto;
 import violetbeach.querydsl.entity.Member;
 import violetbeach.querydsl.entity.QMember;
 import violetbeach.querydsl.entity.QTeam;
@@ -397,6 +398,22 @@ public class QuerydslBasicTest {
                 .fetch();
 
         for (MemberDto memberDto : result) {
+            System.out.println(memberDto);
+        }
+    }
+
+    /*
+    * 위의 예제 테스트랑 다르게 실제 생성자를 사용하기 때문에 컴파일 에러로 잡을 수 있음
+    * 단점은 사용하면 Dto가 QueryDsl 의존성을 가지게 됨.
+    * */
+    @Test
+    public void findDtoByQueryProjection() {
+        List<MemberDto> result = queryFactory
+                .select(new QMemberDto(member.username, member.age))
+                .from(member)
+                .fetch();
+
+        for(MemberDto memberDto : result) {
             System.out.println(memberDto);
         }
     }
