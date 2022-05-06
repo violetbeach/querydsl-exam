@@ -364,5 +364,23 @@ public class QuerydslBasicTest {
         }
     }
 
+    /*
+    * Use Fields
+    * 스펙이 다르면 member.username.as("name") 형식을 사용하면 된다.
+    * ExpressionUtils.as(sources, alias)를 사용하면 서브쿼리에 Alias을 적용할 수 있다.
+    * */
+    @Test
+    public void queryDslByField() {
+        List<MemberDto> result = queryFactory
+                .select(Projections.fields(MemberDto.class,
+                        member.username,
+                        member.age))
+                .from(member)
+                .fetch();
+
+        for (MemberDto memberDto : result) {
+            System.out.println(memberDto);
+        }
+    }
 
 }
