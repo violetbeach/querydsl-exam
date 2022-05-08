@@ -424,7 +424,7 @@ public class QuerydslBasicTest {
         assertThat(result.size()).isEqualTo(1);
     }
 
-    private List<Member> searchMember(String usernameCond, Integer ageCond) {
+    private List<Member> searchMember1(String usernameCond, Integer ageCond) {
 
         BooleanBuilder builder = new BooleanBuilder();
         if(usernameCond != null) {
@@ -481,4 +481,15 @@ public class QuerydslBasicTest {
 
         System.out.println(money); // 10000
     }
+
+    @Test
+    public void sqlFunction() {
+        queryFactory
+                .select(Expressions.stringTemplate(
+                        "function('replace', ${0}, ${1}, ${2})",
+                        member.username, "member", "M"))
+                .from(member)
+                .fetch();
+    }
+
 }
