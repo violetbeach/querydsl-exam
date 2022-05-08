@@ -3,7 +3,9 @@ package violetbeach.querydsl;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -13,7 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.JpaRepository;
 import violetbeach.querydsl.dto.MemberDto;
+import violetbeach.querydsl.dto.MyInterface;
 import violetbeach.querydsl.dto.QMemberDto;
 import violetbeach.querydsl.entity.Member;
 import violetbeach.querydsl.entity.QMember;
@@ -27,6 +31,7 @@ import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.querydsl.jpa.JPAExpressions.*;
@@ -429,7 +434,7 @@ public class QuerydslBasicTest {
         assertThat(result.size()).isEqualTo(1);
     }
 
-    private List<Member> searchMember1(String usernameCond, Integer ageCond) {
+    private List<Member> searchMember(String usernameCond, Integer ageCond) {
 
         BooleanBuilder builder = new BooleanBuilder();
         if(usernameCond != null) {
@@ -444,6 +449,30 @@ public class QuerydslBasicTest {
                 .selectFrom(member)
                 .where(builder)
                 .fetch();
+    }
+
+    @Test
+    public void dynamicQuery_whereParam() {
+        String usernameParam = "member1";
+        Integer ageParam = 10;
+
+        List<Member> result = searchMember2(usernameParam, ageParam);
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    private List<Member> searchMember2(String usernameCond, Integer ageCond) {
+        return queryFactory
+                .selectFrom(member)
+                .where(usernameEq(usernameCond), ageEq(ageCond))
+                .fetch();
+    }
+
+    private BooleanExpression usernameEq(String usernameCond) {
+        return usernameCond != null? member.username.eq(usernameCond) : null;
+    }
+
+    private BooleanExpression ageEq(Integer ageCond) {
+        return ageCond != null? member.age.eq(ageCond) : null;
     }
 
 }
