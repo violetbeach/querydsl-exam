@@ -475,4 +475,20 @@ public class QuerydslBasicTest {
         return ageCond != null? member.age.eq(ageCond) : null;
     }
 
+    @Test
+    public void bulkUpdate() {
+        long updatedCount = queryFactory
+                .update(member)
+                .set(member.username, "비회원")
+                .where(member.age.lt(28))
+                .execute();
+
+        Integer money = queryFactory
+                .select(member.age)
+                .from(member)
+                .where(member.id.eq(1L))
+                .fetchOne();
+
+        System.out.println(money); // 10000
+    }
 }
