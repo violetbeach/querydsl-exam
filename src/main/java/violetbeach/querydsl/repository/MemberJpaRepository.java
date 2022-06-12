@@ -3,16 +3,19 @@ package violetbeach.querydsl.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 import violetbeach.querydsl.entity.Member;
+import violetbeach.querydsl.entity.QMember;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
+import static violetbeach.querydsl.entity.QMember.*;
+
 @Repository
 public class MemberJpaRepository {
 
     private final EntityManager em;
-    private final JPAQueryFactory jpaQueryFactory;
+    private final JPAQueryFactory queryFactory;
 
     public void save(Member member) {
         em.persist(member);
@@ -24,18 +27,20 @@ public class MemberJpaRepository {
     }
 
     public List<Member> findAll() {
-        return em.createQuery("select m from Member m", Member.class)
-                .getResultList();
+        return queryFactory
+                .selectFrom(member)
+                .fetch();
     }
 
     public List<Member> findByUsername(String username) {
-        return em.createQuery("select m from Member m where m.username = :username", Member.class)
-                .setParameter("username", username)
-                .getResultList();
+        return queryFactory
+                .selectFrom(member)
+                .where(member.username.eq(username))
+                .fetch();
     }
 
     public MemberJpaRepository(EntityManager em) {
         this.em = em;
-        this.jpaQueryFactory = new JPAQueryFactory(em);
+        this.queryFactory = new JPAQueryFactory(em);
     }
 }
