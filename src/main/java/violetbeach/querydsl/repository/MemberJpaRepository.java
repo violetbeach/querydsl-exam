@@ -8,16 +8,13 @@ import violetbeach.querydsl.dto.MemberSearchCondition;
 import violetbeach.querydsl.dto.MemberTeamDto;
 import violetbeach.querydsl.dto.QMemberTeamDto;
 import violetbeach.querydsl.entity.Member;
-import violetbeach.querydsl.entity.QMember;
-import violetbeach.querydsl.entity.QTeam;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.util.StringUtils.*;
-import static violetbeach.querydsl.entity.QMember.*;
-import static violetbeach.querydsl.entity.QTeam.*;
+import static violetbeach.querydsl.entity.QMember.member;
+import static violetbeach.querydsl.entity.QTeam.team;
 
 @Repository
 public class MemberJpaRepository {
