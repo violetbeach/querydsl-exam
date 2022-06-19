@@ -1,10 +1,10 @@
 package violetbeach.querydsl.repository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import violetbeach.querydsl.dto.MemberSearchCondition;
 import violetbeach.querydsl.dto.MemberTeamDto;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 public interface MemberRepositoryCustom {
