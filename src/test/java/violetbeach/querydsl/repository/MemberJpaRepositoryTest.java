@@ -18,7 +18,8 @@ class MemberJpaRepositoryTest {
     @Autowired
     EntityManager em;
 
-    @Autowired MemberJpaRepository memberJpaRepository;
+    @Autowired
+    MemberRepository memberJpaRepository;
 
     @Test
     public void basicTest() {
